@@ -3,6 +3,9 @@ package io.kokuwa.maven.helm;
 import java.io.File;
 import java.net.PasswordAuthentication;
 import java.nio.file.Path;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -108,8 +111,10 @@ public class PushMojo extends AbstractHelmMojo {
 
 		for (Path chartArchive : getChartArchives()) {
 			getLog().info("Uploading " + chartArchive + "...");
-			helm()
-					.arguments("push", chartArchive, "oci://" + repository.getUrl())
+			String repoUrl = Stream.of(repository.getUrl(), repository.getProject())
+					.filter(Objects::nonNull)
+					.collect(Collectors.joining("/"));
+			helm().arguments("push", chartArchive, "oci://" + repoUrl)
 					.flag("ca-file", caFile)
 					.flag("insecure-skip-tls-verify", insecure)
 					.flag("plain-http", isPlainHttp(pushPlainHttp))

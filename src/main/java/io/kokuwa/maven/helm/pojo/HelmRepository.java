@@ -22,6 +22,11 @@ public class HelmRepository {
 	private String url;
 
 	/**
+	 *	Project path in the OCI repository
+	 */
+	private String project;
+
+	/**
 	 * Username for basic authentication. If present credentials in server list will be ignored.
 	 */
 	@ToString.Exclude
